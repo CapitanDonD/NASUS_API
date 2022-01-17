@@ -3,6 +3,9 @@ from pathlib import Path
 from urllib.parse import urlparse
 import os.path
 from dotenv import load_dotenv
+import telegram
+from telegram.ext import Updater, CommandHandler, CallbackContext
+
 from pprint import pprint
 
 
@@ -53,9 +56,12 @@ def install_pictures_epic_nasa(api_key):
 
 load_dotenv()
 
+telegram_bot = telegram.Bot(token=f'{os.getenv("TOKEN_TELEGRAM")}')
+updates = telegram_bot.get_updates()
 api_nasa_token = os.getenv("API_NASA")
 api_nasa = {"api_key": f"{api_nasa_token}", "count": "4"}
 api_nasa_epic = {"api_key": f"{api_nasa_token}"}
 
-print(install_pictures_epic_nasa(api_nasa_epic))
-#print(keeping_original_extension("https://apod.nasa.gov/apod/image/2107/LRVBPIX3M82Crop1024.jpg?hahah"))
+telegram_bot.send_message(text='Hiy zyan!', chat_id='@test_telegram_bot_NASA')
+#print(install_pictures_epic_nasa(api_nasa_epic))
+print(telegram_bot.get_me())
