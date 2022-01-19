@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 import os.path
 from dotenv import load_dotenv
 import telegram
-from telegram.ext import Updater, CommandHandler, CallbackContext
+import random
 
 from pprint import pprint
 
@@ -50,7 +50,7 @@ def install_pictures_epic_nasa(api_key):
             params=api_key
         )
         Path("images").mkdir(parents=True, exist_ok=True)
-        with open(f"epic_nasa{index}{keeping_original_extension(response_image.url)}", "wb") as file:
+        with open(f"images/epic_nasa{index}{keeping_original_extension(response_image.url)}", "wb") as file:
             file.write(response_image.content)
 
 
@@ -62,6 +62,6 @@ api_nasa_token = os.getenv("API_NASA")
 api_nasa = {"api_key": f"{api_nasa_token}", "count": "4"}
 api_nasa_epic = {"api_key": f"{api_nasa_token}"}
 
-telegram_bot.send_message(text='Hiy zyan!', chat_id='@test_telegram_bot_NASA')
+telegram_bot.send_document(chat_id=-1001679944664, document=open(f"images/{random.choice(os.listdir('images'))}", 'rb'))
 #print(install_pictures_epic_nasa(api_nasa_epic))
-print(telegram_bot.get_me())
+#print(telegram_bot.get_me())
