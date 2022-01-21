@@ -5,6 +5,7 @@ import os.path
 from dotenv import load_dotenv
 import telegram
 import random
+import time
 
 from pprint import pprint
 
@@ -61,7 +62,11 @@ updates = telegram_bot.get_updates()
 api_nasa_token = os.getenv("API_NASA")
 api_nasa = {"api_key": f"{api_nasa_token}", "count": "4"}
 api_nasa_epic = {"api_key": f"{api_nasa_token}"}
+a = 1
 
-telegram_bot.send_document(chat_id=-1001679944664, document=open(f"images/{random.choice(os.listdir('images'))}", 'rb'))
-#print(install_pictures_epic_nasa(api_nasa_epic))
-#print(telegram_bot.get_me())
+print(install_pictures_epic_nasa(api_nasa_epic))
+while a==1:
+     telegram_bot.send_document(chat_id=-1001679944664, document=open(f"images/{random.choice(os.listdir('images'))}", 'rb'))
+#     print("THE WORLD!!!")
+     time.sleep(os.getenv("TIME_CODE"))
+#     print("Время восстановило свой ход")
