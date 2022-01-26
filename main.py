@@ -59,14 +59,16 @@ if __name__ == "__main__":
     telegram_bot = telegram.Bot(token=f'{os.getenv("TOKEN_TELEGRAM")}')
     updates = telegram_bot.get_updates()
     api_nasa_token = os.getenv("API_NASA")
-    api_nasa = {"api_key": f"{api_nasa_token}", "count": "4"}
+    api_nasa = {"api_key": f"{api_nasa_token}", "count": "5"}
     api_nasa_epic = {"api_key": f"{api_nasa_token}"}
-    a = 1
 
 
-    print(install_pictures_epic_nasa(api_nasa_epic))
-    while a==1:
-         telegram_bot.send_document(chat_id=-1001679944664, document=open(f"images/{random.choice(os.listdir('images'))}", 'rb'))
+    fetch_spacex_last_launch()
+    install_pictures_nasa(api_nasa)
+    install_pictures_epic_nasa(api_nasa_epic)
+    while True:
+        with open(f"images/{random.choice(os.listdir('images'))}", "wb") as file:
+            telegram_bot.send_document(chat_id=-1001679944664, document=file)
     #     print("THE WORLD!!!")
-         time.sleep(os.getenv("TIME_CODE"))
+        time.sleep(os.getenv("TIME_CODE"))
     #     print("Время восстановило свой ход")
