@@ -64,12 +64,10 @@ if __name__ == "__main__":
     api_nasa_epic = {"api_key": f"{api_nasa_token}"}
 
 
-    #fetch_spacex_last_launch()
-    #fetch_pictures_nasa(api_nasa)
+    fetch_spacex_last_launch()
+    fetch_pictures_nasa(api_nasa)
     fetch_pictures_epic_nasa(api_nasa_epic)
     while True:
         with open(f"images/{random.choice(os.listdir('images'))}", "rb") as file:
             telegram_bot.send_document(chat_id=-1001679944664, document=file)
-    #     print("THE WORLD!!!")
         time.sleep(int(os.getenv("TIME_CODE")))
-    #     print("Время восстановило свой ход")
