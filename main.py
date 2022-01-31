@@ -41,9 +41,10 @@ def fetch_pictures_nasa(api_key):
 
 def fetch_pictures_epic_nasa(api_key):
     response = requests.get("https://api.nasa.gov/EPIC/api/natural/images", params=api_key)
-    formated_date = "{(image['date'].split(' ')[0].replace('-', '/'))} / png / {image['image']}"
     response.raise_for_status()
+    print(response.json())
     for index, image in enumerate(response.json()):
+        formated_date = f"{image['date'].split(' ')[0].replace('-', '/')}/png/{image['image']}"
         response_image = requests.get(
             f"https://api.nasa.gov/EPIC/archive/natural/{formated_date}.png",
             params=api_key
@@ -63,12 +64,12 @@ if __name__ == "__main__":
     api_nasa_epic = {"api_key": f"{api_nasa_token}"}
 
 
-    fetch_spacex_last_launch()
-    fetch_pictures_nasa(api_nasa)
+    #fetch_spacex_last_launch()
+    #fetch_pictures_nasa(api_nasa)
     fetch_pictures_epic_nasa(api_nasa_epic)
     while True:
-        with open(f"images/{random.choice(os.listdir('images'))}", "wb") as file:
+        with open(f"images/{random.choice(os.listdir('images'))}", "rb") as file:
             telegram_bot.send_document(chat_id=-1001679944664, document=file)
     #     print("THE WORLD!!!")
-        time.sleep(os.getenv("TIME_CODE"))
+        time.sleep(int(os.getenv("TIME_CODE")))
     #     print("Время восстановило свой ход")
