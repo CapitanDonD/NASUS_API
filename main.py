@@ -8,7 +8,7 @@ import random
 import time
 
 
-def download_pictures(filename, url):
+def download_picture(filename, url):
     filename = f"images/{filename}"
     response = requests.get(url)
 
@@ -17,11 +17,11 @@ def download_pictures(filename, url):
         file.write(response.content)
 
 
-def fetch_spacex_last_launch():
+def fetch_spacex_launch(launch_number):
     response = requests.get("https://api.spacexdata.com/v3/launches/")
     response.raise_for_status()
-    for index, images in enumerate(response.json()[74]["links"]["flickr_images"]):
-        download_pictures(f"spacex_{index}.svg", images)
+    for index, images in enumerate(response.json()[launch_number]["links"]["flickr_images"]):
+        download_picture(f"spacex_{index}.svg", images)
 
 
 def keep_original_extension(url):
@@ -30,24 +30,24 @@ def keep_original_extension(url):
     return split_url[1]
 
 
-def fetch_pictures_nasa(api_key):
-    response = requests.get("https://api.nasa.gov/planetary/apod", params=api_key)
+def fetch_nasa_picture(params):
+    response = requests.get("https://api.nasa.gov/planetary/apod", params=params)
     response.raise_for_status()
     for index, image in enumerate(response.json()):
-        download_pictures(
+        download_picture(
             f"nasa_{index}{keep_original_extension(image['hdurl'])}", image["hdurl"]
         )
 
 
-def fetch_pictures_epic_nasa(api_key):
-    response = requests.get("https://api.nasa.gov/EPIC/api/natural/images", params=api_key)
+def fetch_epic_nasa_picture(params):
+    response = requests.get("https://api.nasa.gov/EPIC/api/natural/images", params=params)
     response.raise_for_status()
     print(response.json())
     for index, image in enumerate(response.json()):
         formated_date = f"{image['date'].split(' ')[0].replace('-', '/')}/png/{image['image']}"
         response_image = requests.get(
             f"https://api.nasa.gov/EPIC/archive/natural/{formated_date}.png",
-            params=api_key
+            params=params
         )
         with open(f"images/epic_nasa{index}{keep_original_extension(response_image.url)}", "wb") as file:
             file.write(response_image.content)
@@ -64,10 +64,10 @@ if __name__ == "__main__":
     api_nasa_epic = {"api_key": f"{api_nasa_token}"}
 
 
-    fetch_spacex_last_launch()
-    fetch_pictures_nasa(api_nasa)
-    fetch_pictures_epic_nasa(api_nasa_epic)
+    fetch_spacex_launch(os.getenv("LAUNCH_NUMBER"))
+    fetch_nasa_picture(api_nasa)
+    fetch_epic_nasa_picture(api_nasa_epic)
     while True:
         with open(f"images/{random.choice(os.listdir('images'))}", "rb") as file:
-            telegram_bot.send_document(chat_id=-1001679944664, document=file)
+            telegram_bot.send_document(chat_id=f'{os.getenv("CHAT_ID")}', document=file)
         time.sleep(int(os.getenv("TIME_CODE")))
