@@ -8,7 +8,7 @@ import random
 import time
 
 
-def download_picture(filepath, url, params = None):
+def download_picture(filepath, url, params=None):
     response = requests.get(url, params=params)
 
     response.raise_for_status()
@@ -29,7 +29,7 @@ def keep_original_extension(url):
     return split_url[1]
 
 
-def fetch_nasa_picture(params):
+def fetch_apod_nasa_picture(params):
     response = requests.get("https://api.nasa.gov/planetary/apod", params=params)
     response.raise_for_status()
     for index, image in enumerate(response.json()):
@@ -53,14 +53,14 @@ if __name__ == "__main__":
 
     telegram_bot = telegram.Bot(token=f'{os.getenv("TOKEN_TELEGRAM")}')
     api_nasa_token = os.getenv("API_NASA")
-    nasa_params = {"api_key": f"{api_nasa_token}", "count": "5"}
-    nasa_epic_params = {"api_key": f"{api_nasa_token}"}
+    nasa_params = {"api_key": api_nasa_token, "count": "5"}
+    nasa_epic_params = {"api_key": api_nasa_token}
     spacex_launch_number = os.getenv("LAUNCH_NUMBER")
     telegram_chat_id = os.getenv("CHAT_ID")
     sleep_code_time = int(os.getenv("TIME_CODE"))
 
     fetch_spacex_launch(spacex_launch_number)
-    fetch_nasa_picture(nasa_params)
+    fetch_apod_nasa_picture(nasa_params)
     fetch_epic_nasa_picture(nasa_epic_params)
     while True:
         with open(f"images/{random.choice(os.listdir('images'))}", "rb") as file:
